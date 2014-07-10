@@ -31,14 +31,22 @@ void testApp::setup(){
     }
     ofLog() << "size of brightVals array: " << brightVals.size();
     
-    ////////set upt he vid feed
-    // MD feeds: http://www.chart.state.md.us/TravInfo/trafficcams.php#
-    vid.loadMovie("redcar.mp4");
-    vid.play();
-    vid.setFrame(650);
-    vid.setLoopState(OF_LOOP_PALINDROME);
-    vidInc = 1;
-    ofLog() << "size: " << vid.getWidth() << " " << vid.getHeight();
+    
+    
+    vid1.loadMovie("redcar.mp4");
+    vid1.play();
+    vid1.setFrame(2);
+    vid1.setLoopState(OF_LOOP_PALINDROME);
+    ofLog() << "size: " << vid1.getWidth() << " " << vid1.getHeight();
+    
+    vid2.loadMovie("redcar.mp4");
+    vid2.play();
+    vid2.setFrame(2);
+    vid2.stop();
+    vid2.setLoopState(OF_LOOP_PALINDROME);
+    ofLog() << "size: " << vid1.getWidth() << " " << vid1.getHeight();
+    
+    
     
     //////////initialize all the cells
     for(int i = 0; i < numLEDs; i++)
@@ -68,9 +76,6 @@ void testApp::update(){
     if(bSaveCells) saveCellsToXml();
     if(bLoadCells) loadCellsFromXml();
     
-    //reset background
-    if(reset) background.reset();
-    
     //reset and re-init cells
     if(cellReset)
     {
@@ -83,28 +88,35 @@ void testApp::update(){
         bReady = false;
     }
     
-    //update video
-   
-    
-    //loop the video between frame 650 and 1100
-    if(vid.getCurrentFrame() >= 1100 || vid.getCurrentFrame() <= 649)
-    {
-        vidInc *= -1;
-        vid.setSpeed(vidInc);
-    }
     
     
-    vid.update();
-    currentFrame = vid.getCurrentFrame();
+    /*
+     if vid1 is over 80%
+     {
+     vid2.play();
+     vid2.update();
+     
+     
+     
+     */
+    
+    vid1.update();
+    
+    
+    
+    
+    
+    
+    currentFrame = vid1.getCurrentFrame();
 
     
     
-    if(vid.isFrameNew() && vid.getWidth() > 200)
+    if(vid1.isFrameNew() && vid1.getWidth() > 200)
     {
-        vidPix = vid.getPixelsRef();
-        vidPix.resize(vid.getWidth(), vid.getHeight());
+        vidPix = vid1.getPixelsRef();
+        vidPix.resize(vid1.getWidth(), vid1.getHeight());
     }
-    else if (vid.getWidth() < 200)
+    else if (vid1.getWidth() < 200)
     {
         ofSetColor(255);
         ofDrawBitmapString("no data", 10,10);
@@ -147,16 +159,17 @@ void testApp::update(){
     }
     
     int averageAmount = avgAmt;
+    
     //if a cell is set, go ahead and start getting its brightness
     for(int i = 0; i < numLEDs; i++)
     {
         if(cells[i].isPointsSet()){
-            cells[i].getCellBrightness(threshPix);
+            cells[i].getCellBrightness(vidPix);
             brightVals[i] = cells[i].getAverageBrightness(averageAmount);
         }
     }
     
-    sendLights();
+    //sendDMX();
 }
 
 //--------------------------------------------------------------
@@ -207,7 +220,7 @@ void testApp::loadCellsFromXml(){
     for(int i = 0; i < numLEDs; i++)
     {
         myXML.pushTag("CELL", i);
-        cells[i].setPointsFirst(threshPix, start);
+        cells[i].setPointsFirst(vidPix, start);
         
         for(int j = 0; j < 4; j++)
         {
@@ -242,7 +255,7 @@ void testApp::saveCellsToXml(){
             myXML.addTag("CELL");
             //set location to that cell child
             myXML.pushTag("CELL", i);
-            
+   
             //go through points
             for(int j = 0; j < cells[i].p.size(); j++)
             {
@@ -260,23 +273,18 @@ void testApp::saveCellsToXml(){
 
 
 //////////////////////////// RUN LIGHTS //////////////////////////////////
-void testApp::sendLights(){
+void testApp::sendDMX(){
    
-    string message = "";
-    for(int i = 0; i < numLEDs; i++)
-    {
-        brightVals[i] = (int)(brightVals[i]*lightAmp);
-        if(brightVals[i] > 255)
-        {
-            brightVals[i] = 255;
-        }
-        
-        message+= ofToString(i) + "|" + ofToString(brightVals[i]) + "[/p]";
-        //ofLog() << "index: " << i << " || value: " << brightVals[i];
-    }
-    udpConnection.Send(message.c_str(),message.length());
-    //ofLog() << "Message Length: " << message.length();
+    //force first byte to zero (it is not a channel but DMX type info - start code)
+	dmxData_[0] = 0;
     
+	if ( ! dmxInterface_ || ! dmxInterface_->isOpen() ) {
+		printf( "Not updating, enttec device is not open.\n");
+	}
+	else{
+		//send the data to the dmx interface
+		dmxInterface_->writeDmx( dmxData_, DMX_DATA_LENGTH );
+	}
     
 }
 

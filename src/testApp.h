@@ -1,13 +1,14 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxCv.h"
 #include "ofxGui.h"
 #include "ofEvents.h"
 #include "sampleCell.h"
 #include "ofxXmlSettings.h"
 #include "ofxNetwork.h"
+#include "ofxGenericDmx.h"
 
+#define DMX_DATA_LENGTH 513
 
 class testApp : public ofBaseApp{
 
@@ -28,22 +29,18 @@ public:
 
     void loadCellsFromXml();
     void saveCellsToXml();
-    void sendLights();
+    void sendDMX();
     
     
     static const int numLEDs = 8;
     vector <int> brightVals;
     
-    ofVideoPlayer vid;
+    ofVideoPlayer vid1;
+    ofVideoPlayer vid2;
+    ofImage vid1Pix;
+    ofImage vid2Pix;
     ofImage vidPix;
     int vidInc;
-  
-    ofxCv::RunningBackground background;
-    ofImage thresholded;
-    ofPixels threshPix;
-    
-    ofVideoGrabber grabber;
-    ofPixels grabPix;
     
     ofPoint start;
     
@@ -55,6 +52,9 @@ public:
     
     ofxXmlSettings myXML;
     ofxUDPManager udpConnection;
+    
+    DmxDevice* dmxInterface_;
+    unsigned char dmxData_[DMX_DATA_LENGTH];
     
     
     
