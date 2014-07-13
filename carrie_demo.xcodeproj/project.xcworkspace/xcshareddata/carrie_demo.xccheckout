@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>6EBB69CC-87DB-4115-A825-EBCE5FC121C3</string>
+	<key>IDESourceControlProjectName</key>
+	<string>carrie_demo</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>5DF145A6-6A18-4D24-B60F-BB838A6B8B6D</key>
+		<string>https://github.com/jmarsico/carrie_furnace_lights.git</string>
+		<key>AE577662-2D56-4246-BBEF-3CF54F8CC65B</key>
+		<string>https://github.com/woutgg/ofxGenericDmx.git</string>
+		<key>CFDE611D-5AEF-42DC-A511-00FD36870164</key>
+		<string>https://github.com/kylemcdonald/ofxCv.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>carrie_demo.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>5DF145A6-6A18-4D24-B60F-BB838A6B8B6D</key>
+		<string>../..</string>
+		<key>AE577662-2D56-4246-BBEF-3CF54F8CC65B</key>
+		<string>../../../../../addons/ofxGenericDmx</string>
+		<key>CFDE611D-5AEF-42DC-A511-00FD36870164</key>
+		<string>../../../../../addons/ofxCv</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/jmarsico/carrie_furnace_lights.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>5DF145A6-6A18-4D24-B60F-BB838A6B8B6D</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>5DF145A6-6A18-4D24-B60F-BB838A6B8B6D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>carrie_furnace_lights</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CFDE611D-5AEF-42DC-A511-00FD36870164</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxCv</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>AE577662-2D56-4246-BBEF-3CF54F8CC65B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxGenericDmx</string>
+		</dict>
+	</array>
+</dict>
+</plist>

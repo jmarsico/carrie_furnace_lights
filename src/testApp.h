@@ -51,7 +51,9 @@ public:
     sampleCell cells[numLEDs];
     
     ofxXmlSettings myXML;
+    ofxXmlSettings cellColors;
     ofxUDPManager udpConnection;
+    
     
     DmxDevice* dmxInterface_;
     unsigned char dmxData_[DMX_DATA_LENGTH];
