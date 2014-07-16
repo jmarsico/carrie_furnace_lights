@@ -39,13 +39,6 @@ void testApp::setup(){
     vid1.setLoopState(OF_LOOP_PALINDROME);
     ofLog() << "size: " << vid1.getWidth() << " " << vid1.getHeight();
     
-    vid2.loadMovie("redcar.mp4");
-    vid2.play();
-    vid2.setFrame(2);
-    vid2.stop();
-    vid2.setLoopState(OF_LOOP_PALINDROME);
-    ofLog() << "size: " << vid1.getWidth() << " " << vid1.getHeight();
-    
     
     
     //////////initialize all the cells
@@ -58,13 +51,23 @@ void testApp::setup(){
     bShowVideo = true;
     
     ////////set up XML for points access
-    if(myXML.load("cellPoints.xml")) ofLog() << "XML loaded successfully";
+    if(pointsXML.load("cellPoints.xml")) ofLog() << "XML loaded successfully";
     else ofLog() << "XML did not load, check data/ folder";
+    
+    ////////set up XML for color recording
+    if(cellColors.load("cellColors.xml"))
+    {
+        ofLog() << "XML cell colors loaded";
+        cellColors.clear();
+    }
+    else ofLog() << "XML for cell colors did not load!!!";
+    
     
     //create the socket and set to send to 169.254.0.2:11999
 	udpConnection.Create();
 	udpConnection.Connect("169.254.0.2",11999);
 	udpConnection.SetNonBlocking(true);
+    
 }
 
 
@@ -87,30 +90,10 @@ void testApp::update(){
         }
         bReady = false;
     }
-    
-    
-    
-    /*
-     if vid1 is over 80%
-     {
-     vid2.play();
-     vid2.update();
-     
-     
-     
-     */
-    
+
     vid1.update();
-    
-    
-    
-    
-    
-    
     currentFrame = vid1.getCurrentFrame();
 
-    
-    
     if(vid1.isFrameNew() && vid1.getWidth() > 200)
     {
         vidPix = vid1.getPixelsRef();
@@ -160,15 +143,16 @@ void testApp::update(){
     
     int averageAmount = avgAmt;
     
-    //if a cell is set, go ahead and start getting its brightness
+    //if a cell is set, go ahead and start getting its brightness or color
     for(int i = 0; i < numLEDs; i++)
     {
         if(cells[i].isPointsSet()){
-            cells[i].getCellBrightness(vidPix);
-            brightVals[i] = cells[i].getAverageBrightness(averageAmount);
+            //cells[i].getCellBrightness(vidPix);
+            //brightVals[i] = cells[i].getAverageBrightness(averageAmount);
+            cells[i].setCellColor(vidPix);
         }
     }
-    
+    writeColorstoXml();
     //sendDMX();
 }
 
@@ -199,9 +183,8 @@ void testApp::draw(){
         {
             ofPushMatrix();
                 ofTranslate(boxSize*i, 0);
-                //ofSetColor(brightVals[i]);
-               // ofColor = cells[i].getCellColor(vidPix);
-                ofSetColor(cells[i].getCellColor(vidPix));
+            
+                ofSetColor(cells[i].getCellColor());
                 ofRect(0,0,boxSize, boxSize);
                 ofSetColor(255);
                 ofDrawBitmapString(ofToString(i), 0,0);
@@ -210,7 +193,36 @@ void testApp::draw(){
     ofPopMatrix();
 }
 
+//--------------------------------------------------------------
+void testApp::writeColorstoXml(){
+    
+    cellColors.addTag("FRAME");
+    cellColors.pushTag("FRAME");
+    
+    for(int i = 0; i<numLEDs; i++)
+    {
+        if(cells[i].isPointsSet())
+        {
+            cellColors.addTag("CELL");
+            cellColors.pushTag("CELL", i);
+            
+            cellColors.setValue("R", cells[i].getCellColor().r);
+            cellColors.setValue("G", cells[i].getCellColor().g);
+            cellColors.setValue("B", cells[i].getCellColor().b);
+            
+            cellColors.popTag();
+            cellColors.popTag();
+        }
+    }
+    
+    cellColors.popTag();
+    
+}
 
+
+void testApp::exit(){
+    cellColors.save("cellColors.xml");
+}
 
 //--------------------------------------------------------------
 void testApp::loadCellsFromXml(){
@@ -219,14 +231,14 @@ void testApp::loadCellsFromXml(){
  
     for(int i = 0; i < numLEDs; i++)
     {
-        myXML.pushTag("CELL", i);
+        pointsXML.pushTag("CELL", i);
         cells[i].setPointsFirst(vidPix, start);
         
         for(int j = 0; j < 4; j++)
         {
             
-            int x = myXML.getValue("PT:X", 0, j);
-            int y = myXML.getValue("PT:Y", 0, j);
+            int x = pointsXML.getValue("PT:X", 0, j);
+            int y = pointsXML.getValue("PT:Y", 0, j);
             
             //set it to the points of that cell and add to the polyline
             cells[i].tempPoint.x = x;
@@ -239,36 +251,36 @@ void testApp::loadCellsFromXml(){
         cells[i].bSettingPoints = false;
         cells[i].bIsSet = true;
         cells[i].getPixLocations();
-        myXML.popTag();
+        pointsXML.popTag();
     }
 }
 
 //--------------------------------------------------------------
 void testApp::saveCellsToXml(){
-    myXML.clear();
+    pointsXML.clear();
 
     for(int i = 0; i < numLEDs; i++)
     {
         if(cells[i].isPointsSet())
         {
             //create a new cell child
-            myXML.addTag("CELL");
+            pointsXML.addTag("CELL");
             //set location to that cell child
-            myXML.pushTag("CELL", i);
+            pointsXML.pushTag("CELL", i);
    
             //go through points
             for(int j = 0; j < cells[i].p.size(); j++)
             {
-                myXML.addTag("PT");
-                myXML.pushTag("PT", j);
-                myXML.setValue("X", cells[i].p[j].x);
-                myXML.setValue("Y", cells[i].p[j].y);
-                myXML.popTag();
+                pointsXML.addTag("PT");
+                pointsXML.pushTag("PT", j);
+                pointsXML.setValue("X", cells[i].p[j].x);
+                pointsXML.setValue("Y", cells[i].p[j].y);
+                pointsXML.popTag();
             }
-            myXML.popTag();
+            pointsXML.popTag();
         }
     }
-    myXML.save("cellPoints.xml");
+    pointsXML.save("cellPoints.xml");
 }
 
 

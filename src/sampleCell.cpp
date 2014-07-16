@@ -207,8 +207,8 @@ int sampleCell::getCellBrightness(const ofPixels &_pix){
 }
 
 //--------------------------------------------------------------
-ofColor sampleCell::getCellColor(const ofPixels &_pix){
-    ofLog() << "get Cell Color for: " << ID;
+void sampleCell::setCellColor(const ofPixels &_pix){
+    //ofLog() << "get Cell Color for: " << ID;
     pix = _pix;
     float r = 0;
     float g = 0;
@@ -225,13 +225,17 @@ ofColor sampleCell::getCellColor(const ofPixels &_pix){
         }
         
         cellColor.set((int)r/pixIn.size(), (int)g/pixIn.size(), (int)b/pixIn.size());
-        ofLog() << "r: " << (int)r/pixIn.size() << " g: " << (int)g/pixIn.size() << " b: " << (int)b/pixIn.size();
+        //ofLog() << "r: " << (int)r/pixIn.size() << " g: " << (int)g/pixIn.size() << " b: " << (int)b/pixIn.size();
 
         r = 0;
         g = 0;
         b = 0;
     }
 
+}
+
+//--------------------------------------------------------------
+ofColor sampleCell::getCellColor(){
     return cellColor;
 }
 

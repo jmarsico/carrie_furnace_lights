@@ -37,7 +37,8 @@ public:
     int getCellBrightness(const ofPixels &_pix);
     int getAverageBrightness(int _numSamples);
     
-    ofColor getCellColor(const ofPixels &_pix);
+    void setCellColor(const ofPixels &_pix);
+    ofColor getCellColor();
     ofColor getAverageColor(int _numSamples);
     
     

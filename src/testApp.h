@@ -16,6 +16,7 @@ public:
     void setup();
     void update();
     void draw();
+    void exit();
 
     void keyPressed(int key);
     void keyReleased(int key);
@@ -31,14 +32,14 @@ public:
     void saveCellsToXml();
     void sendDMX();
     
+    void writeColorstoXml();
+    
     
     static const int numLEDs = 8;
     vector <int> brightVals;
     
     ofVideoPlayer vid1;
-    ofVideoPlayer vid2;
     ofImage vid1Pix;
-    ofImage vid2Pix;
     ofImage vidPix;
     int vidInc;
     
@@ -50,8 +51,9 @@ public:
     
     sampleCell cells[numLEDs];
     
-    ofxXmlSettings myXML;
+    ofxXmlSettings pointsXML;
     ofxXmlSettings cellColors;
+    
     ofxUDPManager udpConnection;
     
     
